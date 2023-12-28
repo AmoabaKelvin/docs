@@ -22,12 +22,13 @@ There are two ways to build API documentation: [OpenAPI](https://mintlify.com/do
 
 ## Authentication
 
-All API endpoints are authenticated using Bearer tokens and picked up from the specification file.
+All API endpoints are authenticated using api keys. You can generate an API key by visiting the [API Playground](https://mintlify.com/docs/api-playground/openapi/setup).
+The API key is a header that must be 
 
 ```json
 "security": [
   {
-    "bearerAuth": []
+    "ApiKeyAuth": []
   }
 ]
 ```

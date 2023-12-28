@@ -1,8 +1,8 @@
 {
   "openapi": "3.0.1",
   "info": {
-    "title": "OpenAPI Plant Store",
-    "description": "A sample API that uses a plant store as an example to demonstrate features in the OpenAPI specification",
+    "title": "iShortn API",
+    "description": "This is the API documentation for the iShortn API. This API is used to shorten URLs.",
     "license": {
       "name": "MIT"
     },
@@ -10,63 +10,93 @@
   },
   "servers": [
     {
-      "url": "http://sandbox.mintlify.com"
+      "url": "https://ishortn.ink/api/"
     }
   ],
   "security": [
     {
-      "bearerAuth": []
+      "api_key": []
     }
   ],
   "paths": {
-    "/plants": {
+    "/dynamic-links": {
       "get": {
-        "description": "Returns all plants from the system that the user has access to",
+        "description": "Returns the actual url for the given shortened dynamic link",
         "parameters": [
           {
-            "name": "limit",
+            "name": "Shortened Part of the Dynamic Link",
             "in": "query",
-            "description": "The maximum number of results to return",
+            "description": "The shortened part of the dynamic link. Example: xYzAbC",
             "schema": {
-              "type": "integer",
-              "format": "int32"
+              "type": "string"
             }
           }
         ],
         "responses": {
           "200": {
-            "description": "Plant response",
+            "description": "The actual url passed in during the creation of the dynamic link",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "array",
-                  "items": {
-                    "$ref": "#/components/schemas/Plant"
+                  "type": "object",
+                  "properties": {
+                    "url": {
+                      "description": "The actual url passed in during the creation of the dynamic link",
+                      "type": "string"
+                    }
                   }
                 }
               }
             }
           },
-          "400": {
-            "description": "Unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          "404": {
+            "description": "The dynamic link was not found"
           }
         }
       },
       "post": {
-        "description": "Creates a new plant in the store",
+        "description": "Creates a new dynamic link",
         "requestBody": {
-          "description": "Plant to add to the store",
+          "description": "Dynamic link to create",
           "content": {
             "application/json": {
               "schema": {
-                "$ref": "#/components/schemas/NewPlant"
+                "properties": {
+                  "projectSubdomain": {
+                    "description": "The subdomain you want to create the dynamic link for. You must own this project.",
+                    "type": "string"
+                  },
+                  "link": {
+                    "description": "A link that your application can handle",
+                    "type": "string"
+                  },
+                  "metaData": {
+                    "description": "The metadata to add to the dynamic link",
+                    "type": "object",
+                    "properties": {
+                      "title": {
+                        "description": "The title of the link",
+                        "type": "string"
+                      },
+                      "description": {
+                        "description": "The description of the link",
+                        "type": "string"
+                      },
+                      "imageUrl": {
+                        "description": "The image of the link",
+                        "type": "string"
+                      }
+                    }
+                  },
+                  "fallbackUrl": {
+                    "description": "The fallback url to open if the user is on an unsupported platform",
+                    "type": "string"
+                  },
+                  "createdFromUI": {
+                    "description": "The UID of the user that created the dynamic link. This is used to determine if the link is showed in the dashboard",
+                    "type": "boolean"
+                  }
+                }
               }
             }
           },
@@ -74,121 +104,36 @@
         },
         "responses": {
           "200": {
-            "description": "plant response",
+            "description": "The shortened dynamic link",
             "content": {
               "application/json": {
                 "schema": {
-                  "$ref": "#/components/schemas/Plant"
+                  "properties": {
+                    "url": {
+                      "description": "The shortened dynamic link",
+                      "type": "string"
+                    }
+                  }
                 }
               }
             }
           },
           "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
-          }
-        }
-      }
-    },
-    "/plants/{id}": {
-      "delete": {
-        "description": "Deletes a single plant based on the ID supplied",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "description": "ID of plant to delete",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "format": "int64"
-            }
-          }
-        ],
-        "responses": {
-          "204": {
-            "description": "Plant deleted",
-            "content": {}
+            "description": "unexpected error"
           },
-          "400": {
-            "description": "unexpected error",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "$ref": "#/components/schemas/Error"
-                }
-              }
-            }
+          "404": {
+            "description": "The project was not found for the given subdomain"
           }
         }
       }
     }
   },
   "components": {
-    "schemas": {
-      "Plant": {
-        "required": [
-          "name"
-        ],
-        "type": "object",
-        "properties": {
-          "name": {
-            "description": "The name of the plant",
-            "type": "string"
-          },
-          "tag": {
-            "description": "Tag to specify the type",
-            "type": "string"
-          }
-        }
-      },
-      "NewPlant": {
-        "allOf": [
-          {
-            "$ref": "#/components/schemas/Plant"
-          },
-          {
-            "required": [
-              "id"
-            ],
-            "type": "object",
-            "properties": {
-              "id": {
-                "description": "Identification number of the plant",
-                "type": "integer",
-                "format": "int64"
-              }
-            }
-          }
-        ]
-      },
-      "Error": {
-        "required": [
-          "error",
-          "message"
-        ],
-        "type": "object",
-        "properties": {
-          "error": {
-            "type": "integer",
-            "format": "int32"
-          },
-          "message": {
-            "type": "string"
-          }
-        }
-      }
-    },
     "securitySchemes": {
-      "bearerAuth": {
-        "type": "http",
-        "scheme": "bearer"
+      "api_key": {
+        "type": "apiKey",
+        "name": "x-ishortn-key",
+        "in": "header"
       }
     }
   }
