@@ -75,11 +75,11 @@
                     "type": "object",
                     "properties": {
                       "title": {
-                        "description": "The title of the link",
+                        "description": "The title of the link. Please know that this has a max of 191 characters. Title should be short and concise.",
                         "type": "string"
                       },
                       "description": {
-                        "description": "The description of the link",
+                        "description": "The description of the link. Please know that this has a max of 191 characters. Description should be short and concise.",
                         "type": "string"
                       },
                       "imageUrl": {
