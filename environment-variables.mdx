@@ -1,0 +1,62 @@
+---
+title: Environment Variables
+description: Learn how to configure environment variables for iShortn.
+---
+
+The `.env.local` file contains various environment variables that need to be set before running iShortn. The `.env.example` file is provided as a reference for setting your own environment variables.
+To start, copy the content of the `.env.example` file into a new file called `.env.local` and fill in the values for the environment variables below.
+
+## Database
+
+The database being used is MySQL. You can either use a local MySQL server or a remote one. The following environment variables need to be set for the database to work:
+
+- `DATABASE_URL`: The URL of the MySQL database. The format is `mysql://username:password@host:port/database`.
+
+You can get a free MySQL database from [Planetscale](https://planetscale.com) or run on locally using [Docker](https://www.docker.com/).
+
+## Authentication
+
+We use Clerk for authentication. Please follow the instructions below on how to set it up.
+There are **6** environment variables that need to be set for authentication to work, but you only need to set **2** of them:
+
+- NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY
+- CLERK_SECRET_KEY
+
+### How to get them
+
+1. Log in to your Clerk account at https://clerk.com/ or create a new account if you don’t have one yet.
+
+2. Once logged in, go to your dashboard at https://dashboard.clerk.com/ and select create a new app if you do not have any application already.
+
+3. On the create new app screen, enter your app name and select Google and or GitHub under the section How will your users sign in?
+
+4. Please note that using other providers will cause issues in the application due to the different payload received from Clerk.
+
+5. After setting up your app, navigate to the “DEVELOPERS” section in the left-hand menu and find “API Keys.”
+
+6. In the “Quick Copy” section, make sure that Next.js is selected, then click the copy icon to obtain the keys. Copy the values for “NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY” and “CLERK_SECRET_KEY.”
+
+7. Paste these values into the `.env.local` file under their respective variables. It should look something like this (real values without censorship):
+
+```bash
+NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_••••••••••••••••••••••••••••••••••••••••••
+CLERK_SECRET_KEY=sk_test_••••••••••••••••••••••••••••••••••••••••••
+```
+
+## Unkey
+
+Unkey is used for API key management and validation.
+You'll need the `UNKEY_API_ID` and `UNKEY_TOKEN` environment variables.
+
+1. Create an account at [Unkey](https://unkey.dev/).
+2. As soon as you create your account you will be asked to create your workspace. Give it a name, and a slug.
+3. Next we will get you to create your first API. This is the API that you will be protecting with Unkey. You can create as many APIs as you like, but for now we’ll just create one.
+4. The root key is what you will use to authenticate. You should copy the value and set it as the `UNKEY_TOKEN` environment variable.
+5. In the settings page of the API, you will find the API ID. You should copy the value and set it as the `UNKEY_API_ID` environment variable.
+
+It should look something like this (real values without censorship):
+
+```bash
+UNKEY_API_ID=unkey_•••••••••••••••••••••••••••••••••••
+UNKEY_TOKEN=api_•••••••••••••••••••••••••••••••••
+```
