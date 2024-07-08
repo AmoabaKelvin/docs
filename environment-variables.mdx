@@ -8,11 +8,7 @@ To start, copy the content of the `.env.example` file into a new file called `.e
 
 ## Database
 
-The database being used is MySQL. You can either use a local MySQL server or a remote one. The following environment variables need to be set for the database to work:
-
-- `DATABASE_URL`: The URL of the MySQL database. The format is `mysql://username:password@host:port/database`.
-
-You can get a free MySQL database from [Planetscale](https://planetscale.com) or run on locally using [Docker](https://www.docker.com/).
+When developing locally, the docker container will automatically create the database for you. You only need to set the `DATABASE_URL` environment variable, which is the same thing as what is in the `.env.example` file.
 
 ## Authentication
 
@@ -41,22 +37,4 @@ There are **6** environment variables that need to be set for authentication to 
 ```bash
 NEXT_PUBLIC_CLERK_PUBLISHABLE_KEY=pk_test_••••••••••••••••••••••••••••••••••••••••••
 CLERK_SECRET_KEY=sk_test_••••••••••••••••••••••••••••••••••••••••••
-```
-
-## Unkey
-
-Unkey is used for API key management and validation.
-You'll need the `UNKEY_API_ID` and `UNKEY_TOKEN` environment variables.
-
-1. Create an account at [Unkey](https://unkey.dev/).
-2. As soon as you create your account you will be asked to create your workspace. Give it a name, and a slug.
-3. Next we will get you to create your first API. This is the API that you will be protecting with Unkey. You can create as many APIs as you like, but for now we’ll just create one.
-4. The root key is what you will use to authenticate. You should copy the value and set it as the `UNKEY_TOKEN` environment variable.
-5. In the settings page of the API, you will find the API ID. You should copy the value and set it as the `UNKEY_API_ID` environment variable.
-
-It should look something like this (real values without censorship):
-
-```bash
-UNKEY_API_ID=unkey_•••••••••••••••••••••••••••••••••••
-UNKEY_TOKEN=api_•••••••••••••••••••••••••••••••••
 ```

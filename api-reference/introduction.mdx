@@ -1,14 +1,19 @@
 ---
-title: 'Introduction'
-description: 'Welcome to the iShortn API documentation.'
+title: "Introduction"
+description: "Welcome to the iShortn API documentation."
 ---
-
-<Note>
-  Please know that not all the endpoints are currently documented. We are working on it and will be adding more endpoints soon.
-</Note>
 
 ## Welcome
 
 To get started, you can use the API Playground to test out the API endpoints. Please know that you will require a valid API key to use the API Playground.
-You can generate an API key by visiting the [settings](https://ishortn.ink/dashboard/settings).
+You can generate an API key by visiting the [settings](https://ishortn.ink/dashboard/tokens).
 
+## Authentication
+
+To authenticate with the API, you will need to include your API key in the `x-api-key` header.
+
+```
+Method Endpoint HTTP/1.1
+Host: ishortn.ink
+x-api-key: YOUR_API_KEY
+```

@@ -1,21 +1,23 @@
 ---
-title: 'Quickstart'
-description: 'Tutorial for getting started with ishortn'
+title: "Quickstart"
+description: "Tutorial for getting started with ishortn"
 ---
 
 ## Setup your development
 
 To run the project locally or deploy it to your own server, you'll need to go through the following steps in the documentation.
 
-
 ## Services that we depend on
-- [PlanetScale](https://planetscale.com/) - Database
-- [Vercel](https://vercel.com/) - Hosting
-- [Clerk](https://clerk.dev/) - Authentication
-- [Unkey](https://unkey.dev/) - Api Key Management
 
+- [MySQL](https://www.mysql.com/) - Database
+- [Redis](https://redis.io/) - Cache
+- [Vercel](https://vercel.com/) - Hosting
+- [Coolify](https://coolify.io/) - Hosting
+- [Clerk](https://clerk.dev/) - Authentication
+- [Docker](https://www.docker.com/) - Containerization
 
 ## Technologies used
+
 - [Next.js](https://nextjs.org/) - React Framework
 - [TailwindCSS](https://tailwindcss.com/) - CSS Framework
 - [Bun](https://bun.sh/) - Package Manager
@@ -33,6 +35,7 @@ To run the project locally or deploy it to your own server, you'll need to go th
     ```bash
     git clone https://github.com/AmoabaKelvin/ishortn.git
     ```
+
   </Accordion>
   <Accordion icon="rectangle-terminal" title="Install dependencies">
     The project uses bun as the package manager and depends on a few other packages.
@@ -48,6 +51,7 @@ To run the project locally or deploy it to your own server, you'll need to go th
     Then fill in the required values with the correct values you get from the services we are using.
 
     Please keep the .env file at the root of the project.
+
   </Accordion>
 </AccordionGroup>
 
@@ -59,7 +63,7 @@ To run the project locally or deploy it to your own server, you'll need to go th
   By completing the above steps you should be able to run the project locally.
   To start the development server run the following command in the root directory of the project.
   ```bash
-  bun dev
+  bun run d
   ```
 </Accordion>
 </AccordionGroup>
