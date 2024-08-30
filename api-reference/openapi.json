@@ -41,6 +41,10 @@
                     "type": "integer",
                     "description": "The number of clicks after which the link expires."
                   },
+                  "domain": {
+                    "type": "string",
+                    "description": "If you have a custom domain, you can specify it here."
+                  },
                   "alias": {
                     "type": "string",
                     "description": "Custom alias for the shortened link."
@@ -56,6 +60,7 @@
                 "url": "https://example.com",
                 "expiresAt": "2024-12-31T23:59:59Z",
                 "expiresAfter": 1000,
+                "domain": "example.com",
                 "alias": "customAlias",
                 "password": "securePassword"
               }
@@ -152,6 +157,15 @@
               "type": "string"
             },
             "description": "The alias of the shortened link."
+          },
+          {
+            "name": "domain",
+            "in": "query",
+            "required": false,
+            "schema": {
+              "type": "string"
+            },
+            "description": "The domain of the shortened link. If not provided, the default domain will be used."
           }
         ],
         "responses": {
