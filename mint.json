@@ -42,16 +42,23 @@
   "navigation": [
     {
       "group": "Get Started",
-      "pages": ["introduction", "quickstart", "environment-variables"]
+      "pages": [
+        "introduction",
+        "quickstart",
+        "environment-variables"
+      ]
     },
     {
       "group": "API Documentation",
-      "pages": ["api-reference/introduction"]
+      "pages": [
+        "api-reference/introduction"
+      ]
     },
     {
       "group": "Endpoint Examples",
       "pages": [
         "api-reference/endpoint/get",
+        "api-reference/endpoint/patch",
         "api-reference/endpoint/create",
         "api-reference/endpoint/analytics"
       ]

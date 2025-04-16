@@ -35,10 +35,12 @@
                   "expiresAt": {
                     "type": "string",
                     "format": "date-time",
+                    "nullable": true,
                     "description": "The date and time when the link expires."
                   },
                   "expiresAfter": {
                     "type": "integer",
+                    "nullable": true,
                     "description": "The number of clicks after which the link expires."
                   },
                   "domain": {
@@ -54,7 +56,9 @@
                     "description": "Password to protect the link. (Only for pro users)"
                   }
                 },
-                "required": ["url"]
+                "required": [
+                  "url"
+                ]
               },
               "example": {
                 "url": "https://example.com",
@@ -73,34 +77,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "shortLink": {
-                      "type": "string",
-                      "description": "The shortened link."
-                    },
-                    "url": {
-                      "type": "string",
-                      "description": "The original URL."
-                    },
-                    "alias": {
-                      "type": "string",
-                      "description": "The alias of the shortened link."
-                    },
-                    "expiresAt": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The expiration date and time of the link."
-                    },
-                    "expiresAfter": {
-                      "type": "integer",
-                      "description": "The number of clicks after which the link expires."
-                    },
-                    "isProtected": {
-                      "type": "boolean",
-                      "description": "Indicates if the link is password protected."
-                    }
-                  }
+                  "$ref": "#/components/schemas/LinkDetails"
                 },
                 "example": {
                   "shortLink": "https://ishortn.ink/customAlias",
@@ -114,26 +91,10 @@
             }
           },
           "400": {
-            "description": "Invalid request or alias collision",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Alias already exists"
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "Invalid or missing API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Invalid or missing API key"
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           }
         },
         "security": [
@@ -150,22 +111,10 @@
         "operationId": "getLinkDetails",
         "parameters": [
           {
-            "name": "alias",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The alias of the shortened link."
+            "$ref": "#/components/parameters/AliasPath"
           },
           {
-            "name": "domain",
-            "in": "query",
-            "required": false,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The domain of the shortened link. If not provided, the default domain will be used."
+            "$ref": "#/components/parameters/DomainQuery"
           }
         ],
         "responses": {
@@ -174,30 +123,7 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "shortLink": {
-                      "type": "string",
-                      "description": "The shortened link."
-                    },
-                    "url": {
-                      "type": "string",
-                      "description": "The original URL."
-                    },
-                    "alias": {
-                      "type": "string",
-                      "description": "The alias of the shortened link."
-                    },
-                    "expiresAt": {
-                      "type": "string",
-                      "format": "date-time",
-                      "description": "The expiration date and time of the link."
-                    },
-                    "expiresAfter": {
-                      "type": "integer",
-                      "description": "The number of clicks after which the link expires."
-                    }
-                  }
+                  "$ref": "#/components/schemas/LinkDetails"
                 },
                 "example": {
                   "shortLink": "https://ishortn.ink/customAlias",
@@ -210,37 +136,99 @@
             }
           },
           "400": {
-            "description": "Missing alias parameter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Missing alias parameter"
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "Invalid or missing API key",
+            "$ref": "#/components/responses/Unauthorized"
+          },
+          "404": {
+            "$ref": "#/components/responses/NotFound"
+          }
+        },
+        "security": [
+          {
+            "apiKeyAuth": []
+          }
+        ]
+      },
+      "patch": {
+        "summary": "Update link details",
+        "description": "Updates details of a shortened link (e.g., destination URL, alias, expiration) using its alias.",
+        "operationId": "updateLinkDetails",
+        "parameters": [
+          {
+            "$ref": "#/components/parameters/AliasPath"
+          },
+          {
+            "$ref": "#/components/parameters/DomainQuery"
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "url": {
+                    "type": "string",
+                    "format": "url",
+                    "description": "The new destination URL."
+                  },
+                  "alias": {
+                    "type": "string",
+                    "description": "The new custom alias for the shortened link."
+                  },
+                  "expiresAt": {
+                    "type": "string",
+                    "format": "date-time",
+                    "nullable": true,
+                    "description": "The new date and time when the link expires. Use null to remove expiration date."
+                  },
+                  "expiresAfter": {
+                    "type": "integer",
+                    "nullable": true,
+                    "description": "The new number of clicks after which the link expires. Use null to remove click limit."
+                  }
+                },
+                "minProperties": 1
+              },
+              "example": {
+                "url": "https://new-destination.com",
+                "expiresAfter": null
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Link updated successfully",
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "string"
+                  "$ref": "#/components/schemas/LinkDetails"
                 },
-                "example": "Invalid or missing API key"
+                "example": {
+                  "shortLink": "https://ishortn.ink/newAlias",
+                  "url": "https://new-destination.com",
+                  "alias": "newAlias",
+                  "expiresAt": "2024-12-31T23:59:59Z",
+                  "expiresAfter": null
+                }
               }
             }
           },
+          "400": {
+            "$ref": "#/components/responses/BadRequest"
+          },
+          "401": {
+            "$ref": "#/components/responses/Unauthorized"
+          },
           "404": {
-            "description": "Link not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Link not found"
-              }
-            }
+            "$ref": "#/components/responses/NotFound"
+          },
+          "500": {
+            "$ref": "#/components/responses/InternalServerError"
           }
         },
         "security": [
@@ -257,13 +245,7 @@
         "operationId": "getAggregatedVisitStatistics",
         "parameters": [
           {
-            "name": "alias",
-            "in": "path",
-            "required": true,
-            "schema": {
-              "type": "string"
-            },
-            "description": "The alias of the shortened link."
+            "$ref": "#/components/parameters/AliasPath"
           }
         ],
         "responses": {
@@ -272,126 +254,51 @@
             "content": {
               "application/json": {
                 "schema": {
-                  "type": "object",
-                  "properties": {
-                    "clicksPerDate": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per date."
-                    },
-                    "clicksPerCountry": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per country."
-                    },
-                    "clicksPerCity": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per city."
-                    },
-                    "clicksPerDevice": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per device."
-                    },
-                    "clicksPerOS": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per operating system."
-                    },
-                    "clicksPerBrowser": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per browser."
-                    },
-                    "clicksPerModel": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "integer"
-                      },
-                      "description": "Number of clicks per device model."
-                    }
+                  "$ref": "#/components/schemas/AnalyticsData"
+                },
+                "example": {
+                  "clicksPerDate": {
+                    "2024-07-01": 150,
+                    "2024-07-02": 200
                   },
-                  "example": {
-                    "clicksPerDate": {
-                      "2024-07-01": 150,
-                      "2024-07-02": 200
-                    },
-                    "clicksPerCountry": {
-                      "US": 300,
-                      "CA": 50
-                    },
-                    "clicksPerCity": {
-                      "New York": 100,
-                      "Los Angeles": 150
-                    },
-                    "clicksPerDevice": {
-                      "Desktop": 250,
-                      "Mobile": 100
-                    },
-                    "clicksPerOS": {
-                      "Windows": 200,
-                      "iOS": 100,
-                      "Android": 50
-                    },
-                    "clicksPerBrowser": {
-                      "Chrome": 150,
-                      "Firefox": 100,
-                      "Safari": 50
-                    },
-                    "clicksPerModel": {
-                      "iPhone 12": 50,
-                      "Galaxy S21": 30
-                    }
+                  "clicksPerCountry": {
+                    "US": 300,
+                    "CA": 50
+                  },
+                  "clicksPerCity": {
+                    "New York": 100,
+                    "Los Angeles": 150
+                  },
+                  "clicksPerDevice": {
+                    "Desktop": 250,
+                    "Mobile": 100
+                  },
+                  "clicksPerOS": {
+                    "Windows": 200,
+                    "iOS": 100,
+                    "Android": 50
+                  },
+                  "clicksPerBrowser": {
+                    "Chrome": 150,
+                    "Firefox": 100,
+                    "Safari": 50
+                  },
+                  "clicksPerModel": {
+                    "iPhone 12": 50,
+                    "Galaxy S21": 30
                   }
                 }
               }
             }
           },
           "400": {
-            "description": "Missing alias parameter",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Missing alias parameter"
-              }
-            }
+            "$ref": "#/components/responses/BadRequest"
           },
           "401": {
-            "description": "Invalid or missing API key",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Invalid or missing API key"
-              }
-            }
+            "$ref": "#/components/responses/Unauthorized"
           },
           "404": {
-            "description": "Link not found",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "string"
-                },
-                "example": "Link not found"
-              }
-            }
+            "$ref": "#/components/responses/NotFound"
           }
         },
         "security": [
@@ -403,6 +310,159 @@
     }
   },
   "components": {
+    "schemas": {
+      "LinkDetails": {
+        "type": "object",
+        "properties": {
+          "shortLink": {
+            "type": "string",
+            "description": "The shortened link."
+          },
+          "url": {
+            "type": "string",
+            "description": "The original URL."
+          },
+          "alias": {
+            "type": "string",
+            "description": "The alias of the shortened link."
+          },
+          "expiresAt": {
+            "type": "string",
+            "format": "date-time",
+            "nullable": true,
+            "description": "The expiration date and time of the link."
+          },
+          "expiresAfter": {
+            "type": "integer",
+            "nullable": true,
+            "description": "The number of clicks after which the link expires."
+          },
+          "isProtected": {
+            "type": "boolean",
+            "description": "Indicates if the link is password protected (relevant for creation response)."
+          }
+        }
+      },
+      "AnalyticsData": {
+        "type": "object",
+        "properties": {
+          "clicksPerDate": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per date."
+          },
+          "clicksPerCountry": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per country."
+          },
+          "clicksPerCity": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per city."
+          },
+          "clicksPerDevice": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per device."
+          },
+          "clicksPerOS": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per operating system."
+          },
+          "clicksPerBrowser": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per browser."
+          },
+          "clicksPerModel": {
+            "type": "object",
+            "additionalProperties": {
+              "type": "integer"
+            },
+            "description": "Number of clicks per device model."
+          }
+        }
+      }
+    },
+    "parameters": {
+      "AliasPath": {
+        "name": "alias",
+        "in": "path",
+        "required": true,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The alias of the shortened link."
+      },
+      "DomainQuery": {
+        "name": "domain",
+        "in": "query",
+        "required": false,
+        "schema": {
+          "type": "string"
+        },
+        "description": "The domain of the shortened link. If not provided, the default domain will be used."
+      }
+    },
+    "responses": {
+      "BadRequest": {
+        "description": "Bad Request (e.g., invalid input, missing parameter, alias collision)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            }
+          }
+        }
+      },
+      "Unauthorized": {
+        "description": "Unauthorized (e.g., invalid or missing API key)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            },
+            "example": "Invalid or missing API key"
+          }
+        }
+      },
+      "NotFound": {
+        "description": "Not Found (e.g., link with the given alias/domain does not exist)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            },
+            "example": "Link not found"
+          }
+        }
+      },
+      "InternalServerError": {
+        "description": "Internal Server Error (e.g., failed to update link)",
+        "content": {
+          "application/json": {
+            "schema": {
+              "type": "string"
+            },
+            "example": "Failed to update link"
+          }
+        }
+      }
+    },
     "securitySchemes": {
       "apiKeyAuth": {
         "type": "apiKey",
